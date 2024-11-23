@@ -1,0 +1,11 @@
+# Archivos y carpetas generados por Visual Studio
+.vs/
+bin/
+obj/
+*.user
+*.suo
+*.cache
+
+# Archivos de configuración local
+*.env
+*.config
