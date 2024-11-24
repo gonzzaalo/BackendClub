@@ -1,8 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using ClubBackend.DataContext;
@@ -24,14 +22,20 @@ namespace CLubBackend.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Deporte>>> GetDeportes()
         {
-            return await _context.Deportes.ToListAsync();
+            // Incluir la relación con Profesor
+            return await _context.Deportes
+                .Include(d => d.Profesor) // Carga ansiosa de la relación con Profesor
+                .ToListAsync();
         }
 
         // GET: api/Deportes/5
         [HttpGet("{id}")]
         public async Task<ActionResult<Deporte>> GetDeporte(int id)
         {
-            var deporte = await _context.Deportes.FindAsync(id);
+            // Incluir la relación con Profesor
+            var deporte = await _context.Deportes
+                .Include(d => d.Profesor) // Carga ansiosa de la relación con Profesor
+                .FirstOrDefaultAsync(d => d.Id == id);
 
             if (deporte == null)
             {
@@ -42,7 +46,6 @@ namespace CLubBackend.Controllers
         }
 
         // PUT: api/Deportes/5
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
         public async Task<IActionResult> PutDeporte(int id, Deporte deporte)
         {
@@ -73,7 +76,6 @@ namespace CLubBackend.Controllers
         }
 
         // POST: api/Deportes
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
         public async Task<ActionResult<Deporte>> PostDeporte(Deporte deporte)
         {
