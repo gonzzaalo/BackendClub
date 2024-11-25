@@ -7,7 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using ClubBackend.DataContext;
 
-namespace CLubBackend.Controllers
+namespace ClubBackend.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
@@ -24,14 +24,20 @@ namespace CLubBackend.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Deportista>>> GetDeportistas()
         {
-            return await _context.Deportistas.ToListAsync();
+            return await _context.Deportistas
+                                 .Include(d => d.Deporte)
+                                 .Include(d => d.Cuota)
+                                 .ToListAsync();
         }
 
         // GET: api/Deportistas/5
         [HttpGet("{id}")]
         public async Task<ActionResult<Deportista>> GetDeportista(int id)
         {
-            var deportista = await _context.Deportistas.FindAsync(id);
+            var deportista = await _context.Deportistas
+                                            .Include(d => d.Deporte)
+                                            .Include(d => d.Cuota)
+                                            .FirstOrDefaultAsync(d => d.Id == id);
 
             if (deportista == null)
             {
@@ -42,7 +48,6 @@ namespace CLubBackend.Controllers
         }
 
         // PUT: api/Deportistas/5
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
         public async Task<IActionResult> PutDeportista(int id, Deportista deportista)
         {
@@ -73,14 +78,13 @@ namespace CLubBackend.Controllers
         }
 
         // POST: api/Deportistas
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
         public async Task<ActionResult<Deportista>> PostDeportista(Deportista deportista)
         {
             _context.Deportistas.Add(deportista);
             await _context.SaveChangesAsync();
 
-            return CreatedAtAction("GetDeportista", new { id = deportista.Id }, deportista);
+            return CreatedAtAction(nameof(GetDeportista), new { id = deportista.Id }, deportista);
         }
 
         // DELETE: api/Deportistas/5
