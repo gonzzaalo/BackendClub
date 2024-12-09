@@ -1,8 +1,8 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using CLubBackend.Models;
 using System;
 
-namespace ClubBackend.DataContext
-{
+
     public class ClubContext : DbContext
     {
         public ClubContext(DbContextOptions<ClubContext> options) : base(options)
@@ -15,7 +15,8 @@ namespace ClubBackend.DataContext
         public DbSet<Socio> Socios { get; set; }
         public DbSet<Cuota> Cuotas { get; set; }
 
-        protected override void OnModelCreating(ModelBuilder modelBuilder)
+
+    protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             // Configuración de relaciones
 
@@ -79,5 +80,7 @@ namespace ClubBackend.DataContext
                 new Socio { Id = 3, Nombre = "Marina", Apellido = "Rodríguez", Telefono = "8901234567", Direccion = "Av. Norte 303", Email = "marina@mail.com", CuotaId = 2 }
             );
         }
-    }
+    public DbSet<CLubBackend.Models.Usuario> Usuario { get; set; } = default!;
+
 }
+
